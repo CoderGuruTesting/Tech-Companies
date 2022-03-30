@@ -1,5 +1,4 @@
-var contents = [
-    {
+var contents = [{
         name: "Apple",
         content: "Apple Inc. is an American multinational technology company that specializes in consumer electronics, software and online services. Apple is the largest information technology company by revenue (totaling US$365.8 billion in 2021) and, as of January 2021, it is the world's most valuable company, the fourth-largest personal computer vendor by unit sales and second-largest mobile phone manufacturer. It is one of the Big Five American information technology companies, alongside Alphabet, Amazon, Meta, and Microsoft.",
         images: "apple.png",
@@ -62,7 +61,7 @@ contents.sort(function (a, b) {
     return (val1 < val2) ? -1 : (val1 > val2) ? 1 : 0;
 });
 
-for(i = 0; i < contents.length; i++) {
+for (i = 0; i < contents.length; i++) {
     var listItem = document.createElement("div");
     listItem.classList.add("listItem");
 
@@ -76,7 +75,7 @@ for(i = 0; i < contents.length; i++) {
     listItemButton.classList.add("listItemBtn");
     listItemButton.id = i.toString();
     listItemButton.innerHTML = '<i class="fa-solid fa-info"></i>';
-    listItemButton.addEventListener("click", function() {
+    listItemButton.addEventListener("click", function () {
         $(".popup").show();
         $(".overlay").show();
         $(".popupTitle").html(contents[parseInt(this.id)].name);
@@ -89,24 +88,50 @@ for(i = 0; i < contents.length; i++) {
     document.querySelector(".listItems").appendChild(listItem);
 }
 
-$('.overlay').on('click', function() {
+var notFound = document.createElement("div");
+notFound.classList.add("notFound");
+notFound.innerHTML = 'No Results <i class="fa-solid fa-face-sad-tear"></i>';
+notFound.style.display = "none";
+
+document.querySelector(".listItems").appendChild(notFound);
+
+$('.listItem:last').css("margin-bottom", "0px");
+
+$('.overlay').on('click', function () {
     $(".popup").hide();
     $('.overlay').hide();
 });
 
 function filterNames(filter) {
-    var input, filter, ul, li, a, i, txtValue;
-    // input = document.getElementById("");
+    var filter, ul, li, a, i, txtValue, shown;
+
     filter = filter.toUpperCase();
     ul = document.querySelector(".listItems");
     li = document.querySelectorAll(".listItem");
+
+    shown = 0;
+
     for (i = 0; i < li.length; i++) {
         a = li[i].getElementsByTagName("span")[0];
         txtValue = a.textContent || a.innerText;
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
             li[i].style.display = "flex";
+
+            shown++;
         } else {
             li[i].style.display = "none";
         }
     }
+
+    console.log(shown);
+
+    if(shown <= 0) {
+        $(".notFound").show();
+    } else {
+        $(".notFound").hide();
+    }
 }
+
+$(".search").on('input', function () {
+    filterNames(document.querySelector(".search").value);
+});
